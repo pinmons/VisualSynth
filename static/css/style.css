@@ -1,0 +1,358 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   style.css — VisualSynth UI
+   Estética: CRT / Synth oscuro. Fuentes: Rajdhani + Share Tech Mono
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Variables ────────────────────────────────────────────────────────────── */
+:root {
+  --bg:           #080c10;
+  --surface:      #0e1520;
+  --surface2:     #131d2b;
+  --border:       #1a2d44;
+  --accent:       #00ffcc;
+  --accent2:      #ff3c78;
+  --accent3:      #7b5cff;
+  --text:         #c8d8e8;
+  --text-muted:   #4a6070;
+  --font-ui:      'Rajdhani', sans-serif;
+  --font-mono:    'Share Tech Mono', monospace;
+  --radius:       4px;
+  --glow:         0 0 12px rgba(0, 255, 204, 0.35);
+  --glow2:        0 0 12px rgba(255, 60, 120, 0.35);
+}
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  overflow: hidden;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.logo-symbol {
+  color: var(--accent);
+  font-size: 1.6rem;
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+.logo-text em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.status-bar {
+  display: flex;
+  gap: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.status-bar span { transition: color 0.3s; }
+.status-bar span.active { color: var(--accent); text-shadow: var(--glow); }
+
+/* ── Layout ───────────────────────────────────────────────────────────────── */
+.app-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  height: calc(100vh - 52px);
+  overflow: hidden;
+}
+
+/* ── Canvas ───────────────────────────────────────────────────────────────── */
+.canvas-wrapper {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+
+#visualCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 16, 0.75);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.canvas-overlay.hidden { display: none; }
+
+/* ── Panel lateral ────────────────────────────────────────────────────────── */
+.control-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.panel-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+/* ── Grupos de botones ────────────────────────────────────────────────────── */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mode-btn, .visual-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.mode-btn:hover, .visual-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.mode-btn.active {
+  background: rgba(0, 255, 204, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: var(--glow);
+}
+.visual-btn.active {
+  background: rgba(123, 92, 255, 0.1);
+  border-color: var(--accent3);
+  color: var(--accent3);
+  box-shadow: 0 0 12px rgba(123, 92, 255, 0.3);
+}
+
+.btn-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+/* ── Controles de rango ───────────────────────────────────────────────────── */
+.control-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.control-label:last-child { margin-bottom: 0; }
+
+.ctrl-val {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 0.8rem;
+  float: right;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  cursor: pointer;
+  padding: 2px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+/* ── Presets ──────────────────────────────────────────────────────────────── */
+.preset-save {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.preset-save input[type="text"] {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.preset-save input[type="text"]:focus {
+  border-color: var(--accent);
+}
+.preset-save input[type="text"]::placeholder {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.action-btn {
+  padding: 7px 12px;
+  background: rgba(0, 255, 204, 0.1);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.action-btn:hover {
+  background: rgba(0, 255, 204, 0.2);
+  box-shadow: var(--glow);
+}
+
+.preset-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.preset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.preset-item:hover {
+  border-color: var(--accent3);
+}
+.preset-item-name {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preset-item-info {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-left: 6px;
+}
+.preset-del {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  border-radius: 2px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.preset-del:hover {
+  color: var(--accent2);
+}
+
+/* ── Scrollbar global ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }

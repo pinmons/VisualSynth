@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VisualSynth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-symbol">⬡</span>
+      <span class="logo-text">Visual<em>Synth</em></span>
+    </div>
+    <div class="status-bar">
+      <span id="status-mode">MODO: NINGUNO</span>
+      <span id="status-visual">VISUAL: PARTÍCULAS</span>
+      <span id="status-fps">FPS: --</span>
+    </div>
+  </header>
+
+  <!-- ══ LAYOUT PRINCIPAL ════════════════════════════════════════════════════ -->
+  <main class="app-layout">
+
+    <!-- Canvas de visuales -->
+    <section class="canvas-wrapper">
+      <canvas id="visualCanvas"></canvas>
+      <div id="canvas-overlay" class="canvas-overlay hidden">
+        <span id="overlay-message"></span>
+      </div>
+    </section>
+
+    <!-- Panel de controles -->
+    <aside class="control-panel">
+
+      <!-- ── Modos de entrada ── -->
+      <div class="panel-section">
+        <h3 class="section-title">ENTRADA</h3>
+        <div class="btn-group">
+          <button class="mode-btn" data-mode="audio" title="Captura micrófono">
+            <span class="btn-icon">🎙</span> Audio
+          </button>
+          <button class="mode-btn" data-mode="camera" title="Captura webcam">
+            <span class="btn-icon">📷</span> Cámara
+          </button>
+          <button class="mode-btn" data-mode="mixed" title="Audio + Cámara">
+            <span class="btn-icon">⚡</span> Mixto
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Modos visuales ── -->
+      <div class="panel-section">
+        <h3 class="section-title">VISUAL</h3>
+        <div class="btn-group">
+          <button class="visual-btn active" data-visual="particles">
+            <span class="btn-icon">✦</span> Partículas
+          </button>
+          <button class="visual-btn" data-visual="waves">
+            <span class="btn-icon">〜</span> Ondas
+          </button>
+          <button class="visual-btn" data-visual="circles">
+            <span class="btn-icon">◎</span> Círculos
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Controles deslizantes ── -->
+      <div class="panel-section">
+        <h3 class="section-title">PARÁMETROS</h3>
+
+        <label class="control-label">
+          Color base
+          <input type="color" id="ctrl-color" value="#00ffcc" />
+        </label>
+
+        <label class="control-label">
+          Velocidad <span class="ctrl-val" id="val-speed">3.0</span>
+          <input type="range" id="ctrl-speed" min="0.1" max="10" step="0.1" value="3" />
+        </label>
+
+        <label class="control-label">
+          Intensidad <span class="ctrl-val" id="val-intensity">5.0</span>
+          <input type="range" id="ctrl-intensity" min="0.1" max="10" step="0.1" value="5" />
+        </label>
+
+        <label class="control-label">
+          Rotación <span class="ctrl-val" id="val-rotation">0°</span>
+          <input type="range" id="ctrl-rotation" min="0" max="360" step="1" value="0" />
+        </label>
+      </div>
+
+      <!-- ── Presets ── -->
+      <div class="panel-section">
+        <h3 class="section-title">PRESETS</h3>
+        <div class="preset-save">
+          <input type="text" id="preset-name" placeholder="Nombre del preset..." maxlength="32" />
+          <button id="btn-save-preset" class="action-btn">Guardar</button>
+        </div>
+        <ul id="preset-list" class="preset-list">
+          <!-- Los presets se cargan dinámicamente desde /api/presets -->
+        </ul>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Elemento oculto para la webcam -->
+  <video id="hiddenVideo" playsinline muted style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none;"></video>
+  <canvas id="hiddenCanvas" style="display:none;"></canvas>
+
+  <script src="/static/js/visual.js"></script>
+</body>
+</html>
