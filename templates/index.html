@@ -20,6 +20,7 @@
     <div class="status-bar">
       <span id="status-mode">MODO: NINGUNO</span>
       <span id="status-visual">VISUAL: PARTÍCULAS</span>
+      <span id="status-filter">FILTRO: NINGUNO</span>
       <span id="status-fps">FPS: --</span>
     </div>
   </header>
@@ -37,6 +38,19 @@
 
     <!-- Panel de controles -->
     <aside class="control-panel">
+
+      <!-- ── Acciones rápidas ── -->
+      <div class="panel-section">
+        <h3 class="section-title">ACCIONES</h3>
+        <div class="btn-group">
+          <button id="btn-random" class="action-btn action-btn-wide" title="Visual y parámetros aleatorios">
+            🎲 Aleatorio
+          </button>
+          <button id="btn-fullscreen" class="action-btn action-btn-wide" title="Pantalla completa (F)">
+            ⛶ Pantalla completa
+          </button>
+        </div>
+      </div>
 
       <!-- ── Modos de entrada ── -->
       <div class="panel-section">
@@ -57,15 +71,50 @@
       <!-- ── Modos visuales ── -->
       <div class="panel-section">
         <h3 class="section-title">VISUAL</h3>
-        <div class="btn-group">
-          <button class="visual-btn active" data-visual="particles">
-            <span class="btn-icon">✦</span> Partículas
+        <div class="visual-grid">
+          <button class="visual-btn active" data-visual="particles" title="Partículas">
+            <span class="vbtn-icon">✦</span>
+            <span class="vbtn-label">Partículas</span>
           </button>
-          <button class="visual-btn" data-visual="waves">
-            <span class="btn-icon">〜</span> Ondas
+          <button class="visual-btn" data-visual="waves" title="Ondas">
+            <span class="vbtn-icon">〜</span>
+            <span class="vbtn-label">Ondas</span>
           </button>
-          <button class="visual-btn" data-visual="circles">
-            <span class="btn-icon">◎</span> Círculos
+          <button class="visual-btn" data-visual="circles" title="Círculos">
+            <span class="vbtn-icon">◎</span>
+            <span class="vbtn-label">Círculos</span>
+          </button>
+          <button class="visual-btn" data-visual="spiral" title="Espiral">
+            <span class="vbtn-icon">🌀</span>
+            <span class="vbtn-label">Espiral</span>
+          </button>
+          <button class="visual-btn" data-visual="tunnel" title="Túnel">
+            <span class="vbtn-icon">⊙</span>
+            <span class="vbtn-label">Túnel</span>
+          </button>
+          <button class="visual-btn" data-visual="pulses" title="Pulsos">
+            <span class="vbtn-icon">◉</span>
+            <span class="vbtn-label">Pulsos</span>
+          </button>
+          <button class="visual-btn" data-visual="nebula" title="Nebulosa">
+            <span class="vbtn-icon">☁</span>
+            <span class="vbtn-label">Nebulosa</span>
+          </button>
+          <button class="visual-btn" data-visual="rain" title="Lluvia">
+            <span class="vbtn-icon">↓</span>
+            <span class="vbtn-label">Lluvia</span>
+          </button>
+          <button class="visual-btn" data-visual="rings" title="Anillos reactivos">
+            <span class="vbtn-icon">⊛</span>
+            <span class="vbtn-label">Anillos</span>
+          </button>
+          <button class="visual-btn" data-visual="stars" title="Estrellas">
+            <span class="vbtn-icon">★</span>
+            <span class="vbtn-label">Estrellas</span>
+          </button>
+          <button class="visual-btn" data-visual="vortex" title="Vórtice">
+            <span class="vbtn-icon">↻</span>
+            <span class="vbtn-label">Vórtice</span>
           </button>
         </div>
       </div>
@@ -95,6 +144,54 @@
         </label>
       </div>
 
+      <!-- ── Efectos ── -->
+      <div class="panel-section">
+        <h3 class="section-title">EFECTOS</h3>
+        <p class="efecto-panel-hint">Activables en tiempo real por visual (persisten en la base de datos).</p>
+        <div class="efecto-list">
+          <label class="efecto-row">
+            <input type="checkbox" data-efecto="rotacion" checked />
+            <span>Rotación</span>
+          </label>
+          <label class="efecto-row">
+            <input type="checkbox" data-efecto="glow" checked />
+            <span>Glow</span>
+          </label>
+          <label class="efecto-row">
+            <input type="checkbox" data-efecto="distorsion" />
+            <span>Distorsión</span>
+          </label>
+          <label class="efecto-row">
+            <input type="checkbox" data-efecto="cambioColor" checked />
+            <span>CambioColor</span>
+          </label>
+          <label class="efecto-row">
+            <input type="checkbox" data-efecto="eco" />
+            <span>Eco</span>
+          </label>
+          <label class="efecto-row">
+            <input type="checkbox" data-efecto="escalaDinamica" checked />
+            <span>EscalaDinamica</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ── Filtros visuales ── -->
+      <div class="panel-section">
+        <h3 class="section-title">FILTROS</h3>
+        <div class="filter-grid">
+          <button type="button" class="filter-btn active" data-filter="none">Ninguno</button>
+          <button type="button" class="filter-btn" data-filter="glitch">Glitch</button>
+          <button type="button" class="filter-btn" data-filter="neon">Neon</button>
+          <button type="button" class="filter-btn" data-filter="pixel">Pixel</button>
+          <button type="button" class="filter-btn" data-filter="vhs">VHS</button>
+          <button type="button" class="filter-btn" data-filter="blur">Blur</button>
+          <button type="button" class="filter-btn" data-filter="mirror">Espejo</button>
+          <button type="button" class="filter-btn" data-filter="invert">Invertir</button>
+          <button type="button" class="filter-btn" data-filter="rgb">RGB Shift</button>
+        </div>
+      </div>
+
       <!-- ── Presets ── -->
       <div class="panel-section">
         <h3 class="section-title">PRESETS</h3>
@@ -102,17 +199,19 @@
           <input type="text" id="preset-name" placeholder="Nombre del preset..." maxlength="32" />
           <button id="btn-save-preset" class="action-btn">Guardar</button>
         </div>
-        <ul id="preset-list" class="preset-list">
-          <!-- Los presets se cargan dinámicamente desde /api/presets -->
-        </ul>
+        <ul id="preset-list" class="preset-list"></ul>
       </div>
 
     </aside>
   </main>
 
-  <!-- Elemento oculto para la webcam -->
-  <video id="hiddenVideo" playsinline muted style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none;"></video>
+  <!-- Video oculto fuera de pantalla (display:none impide decodificación en browsers) -->
+  <video id="hiddenVideo" playsinline muted
+         style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none;"></video>
   <canvas id="hiddenCanvas" style="display:none;"></canvas>
+
+  <!-- MediaPipe Hands (reutiliza la cámara existente) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
   <script src="/static/js/visual.js"></script>
 </body>
