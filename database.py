@@ -30,7 +30,6 @@ VISUAL_TYPES = [
 
 EFECTO_TYPES = [
     ("rotacion",       "Rotación",        "Giro continuo del visual alrededor del centro"),
-    ("glow",           "Glow",            "Resplandor alrededor de las formas dibujadas"),
     ("distorsion",     "Distorsión",      "Deforma levemente el plano de dibujo en el tiempo"),
     ("cambioColor",    "CambioColor",     "Ciclo dinámico de tono sobre el visual"),
     ("eco",            "Eco",             "Rastro más persistente entre fotogramas"),
@@ -39,7 +38,6 @@ EFECTO_TYPES = [
 
 DEFAULT_EFECTO_ACTIVO = {
     "rotacion":       1,
-    "glow":           1,
     "distorsion":     0,
     "cambioColor":    1,
     "eco":            0,
@@ -132,6 +130,9 @@ def init_db():
                 nombre = EXCLUDED.nombre,
                 descripcion = EXCLUDED.descripcion
         """, (nombre, desc, clave))
+
+    # Eliminar efecto antiguo si existiera en una DB antigua
+    cursor.execute("DELETE FROM efecto WHERE clave = %s", ("glow",))
 
     # Poblar relaciones
     cursor.execute("SELECT id, clave FROM tipo_visual")

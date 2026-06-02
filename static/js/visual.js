@@ -52,7 +52,6 @@ const VISUAL_KEYS_ORDER = [
  */
 const efectos = {
   rotacion:       true,
-  glow:           true,
   distorsion:     false,
   cambioColor:    true,
   eco:            false,
@@ -62,7 +61,6 @@ const efectos = {
 /** Intensidad numérica por efecto (columna valor en visual_efecto). */
 const efectosValor = {
   rotacion:       1,
-  glow:           1,
   distorsion:     1,
   cambioColor:    1,
   eco:            1,
@@ -410,7 +408,6 @@ function applyEfectosPreDraw(t, influence) {
   const vEsc = efectosValor.escalaDinamica ?? 1;
   const vRot = efectosValor.rotacion ?? 1;
   const vDis = efectosValor.distorsion ?? 1;
-  const vGlow = efectosValor.glow ?? 1;
 
   ctx.save();
   ctx.translate(cx, cy);
@@ -442,11 +439,6 @@ function applyEfectosPreDraw(t, influence) {
   // CambioColor se aplica mutando state.color por frame (ver animate), no con
   // ctx.filter: hue-rotate + shadowBlur + transform suele dejar en blanco
   // nebulosa, espiral, estrellas, etc. en Chrome/Edge.
-
-  if (efectos.glow) {
-    ctx.shadowColor = state.color;
-    ctx.shadowBlur = Math.min(32, (6 + influence * 14) * vGlow);
-  }
 }
 
 function applyEfectosPostDraw() {
@@ -662,23 +654,65 @@ function drawParticles(influence) {
 // ── 3B. Ondas ────────────────────────────────────────────────────────────────
 
 function drawWaves(t, influence) {
-  const w = canvas.width, h = canvas.height;
-  const lines  = Math.floor(3 + state.intensity * 1.5);
-  const amp    = (h * 0.08) * (1 + influence * 2);
-  const freq   = 0.008 + influence * 0.006;
-  const spd    = state.speed * 0.02;
+  const w = canvas.width;
+  const h = canvas.height;
+
+  const lines = Math.floor(3 + state.intensity);
+
+  const amp =
+    (h * 0.06) *
+    (1 + influence * 1.5);
+
+  const freq =
+    0.008 +
+    influence * 0.004;
+
+  const spd =
+    state.speed * 0.02;
+
+  const step =
+    Math.max(
+      4,
+      Math.floor(w / 250)
+    );
+
+  ctx.lineWidth =
+    1 + state.intensity * 0.2;
 
   for (let i = 0; i < lines; i++) {
-    const yBase  = (h / (lines + 1)) * (i + 1);
-    const offset = (t * spd) + (i * 1.2);
+
+    const yBase =
+      (h / (lines + 1)) *
+      (i + 1);
+
+    const offset =
+      t * spd +
+      i * 1.2;
+
     ctx.beginPath();
-    ctx.lineWidth   = 1 + state.intensity * 0.3 * (1 + influence);
-    ctx.strokeStyle = hexToRgba(state.color, 0.3 + (i / lines) * 0.5);
-    for (let x = 0; x <= w; x += 2) {
-      const y = yBase + Math.sin(x * freq + offset) * amp
-                      + Math.sin(x * freq * 1.7 + offset * 0.8) * amp * 0.4;
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+
+    for (let x = 0; x < w; x += step) {
+
+      const y =
+        yBase +
+        Math.sin(x * freq + offset) * amp +
+        Math.sin(
+          x * freq * 1.7 +
+          offset * 0.8
+        ) * amp * 0.4;
+
+      if (x === 0)
+        ctx.moveTo(x, y);
+      else
+        ctx.lineTo(x, y);
     }
+
+    ctx.strokeStyle =
+      hexToRgba(
+        state.color,
+        0.35 + i * 0.08
+      );
+
     ctx.stroke();
   }
 }
@@ -767,50 +801,127 @@ function drawSpiral(t, influence) {
 
 const tunnelRings = [];
 
+const MAX_RINGS = 40;
+
 function initTunnel() {
   tunnelRings.length = 0;
 }
 
 function createTunnelRing() {
-  const sides = Math.floor(4 + Math.random() * 5); // polígono de 4-8 lados
   return {
     radius: 2,
-    alpha:  0,
-    sides,
+    alpha: 0,
+    sides: 4 + Math.floor(Math.random() * 5),
     rotOffset: Math.random() * Math.PI * 2,
   };
 }
 
 function drawTunnel(t, influence) {
-  const cx = canvas.width / 2, cy = canvas.height / 2;
-  const maxR = Math.hypot(canvas.width, canvas.height) * 0.6;
-  const spd  = state.speed * 1.5 * (1 + influence * 1.5);
+  const cx = canvas.width * 0.5;
+  const cy = canvas.height * 0.5;
 
-  // Generar nuevos anillos con cadencia basada en velocidad
-  if (t % Math.max(1, Math.floor(18 / Math.max(0.05, state.speed))) === 0) {
+  const maxR = Math.min(
+  Math.hypot(canvas.width, canvas.height) * 0.35,
+  500
+);
+
+  const spd =
+    state.speed *
+    1.4 *
+    (1 + influence * 1.2);
+
+  const globalRot =
+    (state.rotation / 360) *
+    Math.PI *
+    2;
+
+  const spawnRate = Math.max(
+    4,
+    Math.floor(35 / Math.max(0.1, state.speed))
+  );
+
+  if (t % spawnRate === 0) {
+    if (tunnelRings.length >= MAX_RINGS) {
+      tunnelRings.shift();
+    }
+
     tunnelRings.push(createTunnelRing());
   }
 
+  ctx.lineWidth = Math.min(
+    2,
+    1 + state.intensity * 0.15
+  );
+
   for (let i = tunnelRings.length - 1; i >= 0; i--) {
     const r = tunnelRings[i];
+
     r.radius += spd;
-    r.alpha   = Math.min(0.8, r.radius / 60) * (1 - r.radius / maxR);
-    r.rotOffset += 0.003 * state.speed;
+    r.rotOffset += 0.002 * state.speed;
 
-    if (r.radius > maxR) { tunnelRings.splice(i, 1); continue; }
-
-    // Dibujar polígono regular
-    ctx.beginPath();
-    for (let s = 0; s <= r.sides; s++) {
-      const a = (s / r.sides) * Math.PI * 2 + r.rotOffset
-              + (state.rotation / 360) * Math.PI * 2;
-      const x = cx + Math.cos(a) * r.radius;
-      const y = cy + Math.sin(a) * r.radius;
-      s === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    // eliminar antes de que llegue al borde
+    if (r.radius > maxR * 0.8) {
+      tunnelRings.splice(i, 1);
+      continue;
     }
+
+    const fadeIn =
+      Math.min(0.8, r.radius / 60);
+
+    const fadeOut =
+      1 - r.radius / (maxR * 0.8);
+
+    r.alpha = fadeIn * fadeOut;
+
+    // no renderizar anillos invisibles
+    if (r.alpha < 0.03) {
+      tunnelRings.splice(i, 1);
+      continue;
+    }
+
+    let sides = r.sides;
+
+    // reducir detalle en anillos grandes
+    if (r.radius > maxR * 0.45) {
+      sides = 4;
+    }
+
+    const step =
+      (Math.PI * 2) / sides;
+
+    ctx.beginPath();
+
+    for (let s = 0; s <= sides; s++) {
+      const angle =
+        s * step +
+        r.rotOffset +
+        globalRot;
+
+      const x =
+        cx +
+        Math.cos(angle) *
+          r.radius;
+
+      const y =
+        cy +
+        Math.sin(angle) *
+          r.radius;
+
+      if (s === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+
     ctx.closePath();
-    ctx.strokeStyle = hexToRgba(state.color, r.alpha * (0.6 + influence * 0.4));
-    ctx.lineWidth   = 1 + state.intensity * 0.2;
+
+    ctx.strokeStyle = hexToRgba(
+      state.color,
+      r.alpha *
+        (0.55 + influence * 0.35)
+    );
+
     ctx.stroke();
   }
 }

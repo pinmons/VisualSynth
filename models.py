@@ -14,7 +14,6 @@ VISUAL_MODES = Literal[
 
 EFECTO_CLAVES = Literal[
     "rotacion",
-    "glow",
     "distorsion",
     "cambioColor",
     "eco",
@@ -94,5 +93,5 @@ class VisualEfectosBulkBody(BaseModel):
     """Cuerpo POST: mapa clave_efecto → campos a aplicar."""
     efectos: dict[str, VisualEfectoPatch] = Field(
         ...,
-        description='Ej.: {"glow": {"activo": true}, "eco": {"activo": false, "valor": 1}}',
+        description='Ej.: {"rotacion": {"activo": true}, "eco": {"activo": false, "valor": 1}}',
     )
