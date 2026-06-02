@@ -364,9 +364,10 @@ def save_preset(preset: PresetCreate):
             intensity,
             rotation,
             mode,
-            visual
+            visual,
+            filter
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id
     """, (
         preset.name,
@@ -375,7 +376,8 @@ def save_preset(preset: PresetCreate):
         preset.intensity,
         preset.rotation,
         preset.mode,
-        preset.visual
+        preset.visual,
+        preset.filter,
     ))
 
     new_id = cursor.fetchone()["id"]

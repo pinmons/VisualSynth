@@ -21,6 +21,18 @@ EFECTO_CLAVES = Literal[
     "escalaDinamica",
 ]
 
+FILTER_KEYS = Literal[
+    "none",
+    "glitch",
+    "neon",
+    "pixel",
+    "vhs",
+    "blur",
+    "mirror",
+    "invert",
+    "rgb",
+]
+
 
 class PresetCreate(BaseModel):
     """Modelo para crear un nuevo preset."""
@@ -31,6 +43,7 @@ class PresetCreate(BaseModel):
     rotation: float = Field(..., ge=0.0, le=360.0)
     mode: str = Field(..., description="none | audio | camera | mixed")
     visual: VISUAL_MODES = Field(..., description="Clave del tipo visual activo")
+    filter: FILTER_KEYS = Field(..., description="Filtro visual activo")
 
 
 class PresetResponse(BaseModel):
@@ -43,6 +56,7 @@ class PresetResponse(BaseModel):
     rotation: float
     mode: str
     visual: str
+    filter: FILTER_KEYS
     created_at: datetime
 
 

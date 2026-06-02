@@ -1522,9 +1522,11 @@ function renderPresetList(presets) {
   presets.forEach(p => {
     const li = document.createElement('li');
     li.className = 'preset-item';
+    const filterLabel = FILTER_LABELS[normalizeFilterKey(p.filter || 'none')] || (p.filter || 'NONE');
+    const filterInfo = normalizeFilterKey(p.filter || 'none') === 'none' ? '' : ` • ${filterLabel}`;
     li.innerHTML = `
       <span class="preset-item-name">${escHtml(p.name)}</span>
-      <span class="preset-item-info">${VISUAL_LABELS[p.visual] || p.visual}</span>
+      <span class="preset-item-info">${escHtml(VISUAL_LABELS[p.visual] || p.visual)}${filterInfo}</span>
       <button class="preset-del" data-id="${p.id}" title="Eliminar">✕</button>
     `;
     li.querySelector('.preset-item-name').addEventListener('click', () => applyPreset(p));
@@ -1540,6 +1542,8 @@ function applyPreset(p) {
   state.color = p.color; state.speed = p.speed;
   state.intensity = p.intensity; state.rotation = p.rotation;
   state.visualMode = normalizeVisualKey(p.visual);
+  const filterKey = normalizeFilterKey(p.filter || 'none');
+  setVisualFilter(filterKey, { notify: false });
 
   document.getElementById('ctrl-color').value     = p.color;
   document.getElementById('ctrl-speed').value     = p.speed;
@@ -1570,6 +1574,7 @@ btnSavePreset.addEventListener('click', async () => {
         name, color: state.color, speed: state.speed,
         intensity: state.intensity, rotation: state.rotation,
         mode: state.inputMode, visual: state.visualMode,
+        filter: state.visualFilter,
       }),
     });
     if (res.ok) { presetNameEl.value = ''; await loadPresets(); }

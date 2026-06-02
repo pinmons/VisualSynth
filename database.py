@@ -69,8 +69,13 @@ def init_db():
             rotation REAL NOT NULL,
             mode TEXT NOT NULL,
             visual TEXT NOT NULL,
+            filter TEXT NOT NULL DEFAULT 'none',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
+    """)
+    cursor.execute("""
+        ALTER TABLE presets
+        ADD COLUMN IF NOT EXISTS filter TEXT NOT NULL DEFAULT 'none'
     """)
 
     # Tabla tipo_visual
