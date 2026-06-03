@@ -1340,11 +1340,13 @@ function updateMotionLevel() {
   if (prevFrameData) {
     let diff = 0;
     for (let i = 0; i < curr.data.length; i += 16) {
-      diff += Math.abs(curr.data[i]     - prevFrameData[i]);
-      diff += Math.abs(curr.data[i + 1] - prevFrameData[i + 1]);
-      diff += Math.abs(curr.data[i + 2] - prevFrameData[i + 2]);
+      diff += Math.abs(curr.data[i]   - prevFrameData[i]);
+      diff += Math.abs(curr.data[i+1] - prevFrameData[i+1]);
+      diff += Math.abs(curr.data[i+2] - prevFrameData[i+2]);
     }
-    state.motionLevel = Math.min(1, diff / ((curr.data.length / 16) * 3 * 25));
+    const raw = Math.min(1, diff / ((curr.data.length / 16) * 3 * 8));
+    const alpha = raw > state.motionLevel ? 0.6 : 0.12;
+    state.motionLevel = state.motionLevel * (1 - alpha) + raw * alpha;
   }
   prevFrameData = new Uint8ClampedArray(curr.data);
 }
@@ -1373,7 +1375,7 @@ function animate(timestamp) {
   state.frame++;
 
   if (state.inputMode === 'audio' || state.inputMode === 'mixed') updateAudioLevel();
-  if ((state.inputMode === 'camera' || state.inputMode === 'mixed') && state.frame % 3 === 0) updateMotionLevel();
+  if (state.inputMode === 'camera' || state.inputMode === 'mixed') updateMotionLevel();
 
   let influence = 0;
   if (state.inputMode === 'audio')  influence = state.audioLevel;
